@@ -123,31 +123,61 @@ Now we're going to switch to the "playground" branch. We only commit to the "mas
 **Master** branch is what you release to the public. It's been thoroughly tested, and we know it works. This is what we also call the "release" version of our software, because it's ready to be "released" to the public.
 **Dev** branch (sometimes also known as "devel," "develop," or "development" branch) is the primary branch of the repo that the developers will "commit" and "push" their code to when it's working *as far as they can tell.* This is an important distinction in the industry, where programmers don't do the most thorough testing. You have dedicated *testers* for that job, who then report bugs back to the developers, who then go chase down and fix those bugs. The dev branch is usually *mostly* stable, but *not quite* ready for prime-time.
 **BugFix/[insert name here]** Is typically used for exactly that--Tracking down and fixing bugs. Different companies have different naming conventions for these kinds of branches, so for our purposes, we'll just stick with our names for this, but you will likely encounter companies which use the style of "**BugFix/Issue#[number]**" for their repos. An example of this could be a branch called "**BugFix/Issue#152_player_run_broken**" This means there's a specific ticket number associated with this bug (152), and the bug has something to do with the player's character having issues with running. Easy enough, right? So let's make our own branch! For now, we'll use our own name. My name is Kyle, so just replace anywhere you see "kyle" with your own name.
-To create and switch to a new branch, use the following:
+
+10. To create and switch to a new branch, use the following:
 
 ```bash
 $ git checkout dev
-(you should see something like "Switched to branch "Dev"")
-$ git checkout -b 
+Switched to a new branch 'dev'
+Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+
+$ git checkout -b kyle dev
+Switched to a new branch 'kyle'
 ```
 
-This will switch your current working branch from "master" to "playground" and you may notice the files have changed. That's how it works. It literally swaps out files when you switch from one branch to another, that way you *cannot* mess with the files in another branch. It does this to stop you from accidentally screwing up another branch.
+This will switch your current working branch from "master" to "dev" and then creates a branch *from* dev with your name. If you looked at the files while you were in the "master" branch, and you look at the files now that you switched to your own branch, you may notice the files have changed. That's how it works. It literally swaps out files when you switch from one branch to another, that way you *cannot* mess with the files in another branch. It does this to stop you from accidentally screwing up another branch.
 
-Now that you're in the "playground" branch, you can do whatever you want with the code. We won't be using the playground branch for anything other than for you to mess around with git and get used to it, so feel free to mess with files and fuck it up, and try to fix it, whatever. It's why I made it. But, since you just switched to it, and you're all up to date with it, let's modify a file and do the whole "game save" thing with it. Open up any file, doesn't matter which one, and change something in it, and save the file. Now come back to the terminal, and type:
+Now that you're in your own branch, you can do whatever you want with the code, with no fear of messing up anyone else's work. Now, since you just switched to your own branch, and you're all up to date with it, let's modify a file and do the whole "game save" (i.e. git commit) thing with it, and then push those files for some practice. Let's create a blank file called "test.txt". To do that, we'll use the BASH command "touch", which creates a blank file with a given name.
 
-    $ git status
+```bash
+$ touch test.txt
+```
+
+That's it! We made a new file! If you use "ls" or "ls -la" you should see the new file you just made. Now, technically, that's all it takes to make enough of a difference that git will allow you to make a commit, so let's see what it says by running a "git status" command...
+
+```bash
+$ git status
+On branch kyle
+Untracked files:
+  (use "git add <file..." to include in what will be committed)
+
+        test.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
 
 You should see a readout of what files you changed. The git equivalent of making a new game save that you can come back to later is called making a "git commit." This creates a unique save point within the repo and notes the changes you made this time. To create a git commit, type the following into the terminal:
 
-    $ git commit -m "my first git commit"
+```bash
+$ git add *
 
-## What did I just do?
+$ git commit -m "my first git commit"
+[kyle e02cb74] my first git commit
+ 2 files changed, 24 insertions(+), 6 deletions(-)
+  create mode 100644 test.txt
+```
+
+Just know that your output won't match *exactly* what I have here, but it should look *pretty close.*
+
+### What did I just do?
 
 So the first part,
 
     $ git commit
 
-did exactly what we just said it would. The part in quotes is a brief description of what you did in the commit (except not this time.) Normally, you'd put something in there, like "Changed variable [xyz] to [abc] and changed function call to reflect that" or something short and descriptive like that to help you (and others on your team) figure out what this change was, and why it was important enough for you to commit it. The "-m" flag says I'm going to put my description in double-quotes right here and now, while the "-a" flag tells git to open up a text editor for your to manually type in your commit description, which it will do. For now, let's keep it simple, and just go with "-m" and type it right there. Now, if you did everything correctly, it should say something like "1 file changed, [blah blah] insertions/deletions, [blah blah]." That's fine. That means it worked. Now we're ready to *push* our commit to the "remote branch" (which lives on github). Right now, you're working in the "local" branch, which lives on your machine, and you're *pushing* your changes into the "remote" branch (which lives on github). We do that with:
+did exactly what we just said it would. The part in quotes is a brief description of what you did in the commit (except not this time.) Normally, you'd put something in there, like "Changed variable [xyz] to [abc] and changed function call to reflect that" or something short and descriptive like that to help you (and others on your team) figure out what this change was, and why it was important enough for you to commit it. The "-m" flag says I'm going to put my description in double-quotes right here and now, while the "-a" flag tells git to open up a text editor for you to manually type in your commit description, which it will do. For now, let's keep it simple, and just go with "-m" and type it right there. Now, if you did everything correctly, it should say something like the text above. If not, PM me, and we'll see what went wrong. 
+
+Now we're ready to *push* our commit to the "remote branch" (which lives on github). Right now, you're working in the "local" branch, which lives on your machine, and you're *pushing* your changes into the "remote" branch (which lives on github). We do that with:
 
     $ git push
 
@@ -155,7 +185,9 @@ This time, it will ask for your username and password *regardless* of whether or
 
 Now let's say you made a mistake, or somehow broke your code, and you want to restore what you had before, and undo ALL of your changes since your last commit/push. This is pretty straightforward, even if the syntax seems a little weird.
 
-    $ git reset --hard HEAD
+```bash
+$ git reset --hard HEAD
+```
 
 This will completely undo everything you did and put you back to the most recent commit/push you made. If it turns out your mistake is much worse than that, and you want to go back to an even *earlier* commit, that's a bit more involved, and is a bit too complicated for this simple write-up, so just IM me on slack if you find yourself in this situation, and we'll go through it together. But the commands I showed you here should be enough to get you by if you're working on your own repo. There's just one more command you need to know, and while on the surface, it seems easy and straightforward, it can cause some headaches, depending on the situation, so I'm only going to cover the easy part. If someone else on the team modified the remote branch (like you just did when you committed and pushed your code to the remote branch) and you want to get their changes on your local branch, you need to do a git pull:
 
