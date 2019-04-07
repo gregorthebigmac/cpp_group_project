@@ -195,6 +195,8 @@ $ git reset --hard HEAD
 
 This will completely undo everything you did and put you back to the most recent commit/push you made. If it turns out your mistake is much worse than that, and you want to go back to an even *earlier* commit, that's a bit more involved, and is a bit too complicated for this simple write-up, so just IM me on slack if you find yourself in this situation, and we'll go through it together. But the commands I showed you here should be enough to get you by if you're working on your own repo. There's just one more command you need to know, and while on the surface, it seems easy and straightforward, it can cause some headaches, depending on the situation, so I'm only going to cover the easy part. If someone else on the team modified the remote branch (like you just did when you committed and pushed your code to the remote branch) and you want to get their changes on your local branch, you need to do a git pull:
 
-    $ git pull
+```bash
+$ git pull
+```
 
 This will "pull" all the changes from the remote branch into your local branch. The reason this can get a bit hairy is when you've made changes on your local branch that haven't been committed and pushed to the remote branch. This can (and usually does) cause a conflict, which *can* be difficult to fix. Just IM me if that happens.
