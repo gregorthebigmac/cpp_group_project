@@ -174,14 +174,16 @@ Just know that your output won't match *exactly* what I have here, but it should
 So the first part,
 
 ```bash
-    $ git commit
+$ git commit
 ```
 
 did exactly what we just said it would. The part in quotes is a brief description of what you did in the commit (except not this time.) Normally, you'd put something in there, like "Changed variable [xyz] to [abc] and changed function call to reflect that" or something short and descriptive like that to help you (and others on your team) figure out what this change was, and why it was important enough for you to commit it. The "-m" flag says I'm going to put my description in double-quotes right here and now, while the "-a" flag tells git to open up a text editor for you to manually type in your commit description, which it will do. For now, let's keep it simple, and just go with "-m" and type it right there. Now, if you did everything correctly, it should say something like the text above. If not, PM me, and we'll see what went wrong. 
 
 Now we're ready to *push* our commit to the "remote branch" (which lives on github). Right now, you're working in the "local" branch, which lives on your machine, and you're *pushing* your changes into the "remote" branch (which lives on github). We do that with:
 
-    $ git push
+```bash
+$ git push
+```
 
 This time, it will ask for your username and password *regardless* of whether or not this is a private or public repo. That's because not just anyone can push to a git repo. Even with public repos, you must have permission to push code to a repo. It's both a security and safety feature. You don't want random anonymous users pushing code into your repo, even if it's open source software.
 
