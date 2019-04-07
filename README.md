@@ -127,21 +127,39 @@ To create and switch to a new branch, use the following:
 
 ```bash
 $ git checkout dev
-(you should see something like "Switched to branch "Dev"")
-$ git checkout -b 
+Switched to a new branch 'dev'
+Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+
+$ git checkout -b kyle dev
+Switched to a new branch 'kyle'
 ```
 
-This will switch your current working branch from "master" to "playground" and you may notice the files have changed. That's how it works. It literally swaps out files when you switch from one branch to another, that way you *cannot* mess with the files in another branch. It does this to stop you from accidentally screwing up another branch.
+This will switch your current working branch from "master" to "dev" and then creates a branch *from* dev with your name. If you looked at the files while you were in the "master" branch, and you look at the files now that you switched to your own branch, you may notice the files have changed. That's how it works. It literally swaps out files when you switch from one branch to another, that way you *cannot* mess with the files in another branch. It does this to stop you from accidentally screwing up another branch.
 
-Now that you're in the "playground" branch, you can do whatever you want with the code. We won't be using the playground branch for anything other than for you to mess around with git and get used to it, so feel free to mess with files and fuck it up, and try to fix it, whatever. It's why I made it. But, since you just switched to it, and you're all up to date with it, let's modify a file and do the whole "game save" thing with it. Open up any file, doesn't matter which one, and change something in it, and save the file. Now come back to the terminal, and type:
+Now that you're in your own branch, you can do whatever you want with the code, with no fear of messing up anyone else's work. Now, since you just switched to your own branch, and you're all up to date with it, let's modify a file and do the whole "game save" (i.e. git commit) thing with it, and then push those files for some practice. Let's create a blank file called "test.txt". To do that, we'll use the BASH command "touch", which creates a blank file with a given name.
 
-    $ git status
+```bash
+$ touch test.txt
+```
+
+That's it! We made a new file! If you use "ls" or "ls -la" you should see the new file you just made. Now, technically, that's all it takes to make enough of a difference that git will allow you to make a commit, so let's see what it says by running a "git status" command...
+
+```bash
+$ git status
+On branch kyle
+Untracked files:
+  (use "git add <file..." to include in what will be committed)
+
+        test.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
 
 You should see a readout of what files you changed. The git equivalent of making a new game save that you can come back to later is called making a "git commit." This creates a unique save point within the repo and notes the changes you made this time. To create a git commit, type the following into the terminal:
 
     $ git commit -m "my first git commit"
 
-## What did I just do?
+### What did I just do?
 
 So the first part,
 
