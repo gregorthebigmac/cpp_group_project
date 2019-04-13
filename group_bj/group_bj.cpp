@@ -1,10 +1,10 @@
-#include <iostream>
+#include "deck.h"
 
 using std::cout;
 using std::endl;
 
-int main()
-{
-	cout << "test" << endl;
+deck d;
+
+int main() {
 	return 0;
 }
