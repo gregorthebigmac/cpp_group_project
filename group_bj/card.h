@@ -1,21 +1,21 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
-#include <vector>
 
 class card {
 public:
-	card();
-	~card();
+	card(){}
+	~card(){}
 
 	// getters
-	int get_suit() { return m_suit; }
+	char get_suit() { return m_suit; }
 	int get_value() { return m_value; }
 	// setters
-	void set_suit(int suit) { m_suit = suit; }
+	void set_suit(char suit) { m_suit = suit; }
 	void set_value(int value) { m_value = value; }
 
 private:
-	int m_suit;	// 0 = clubs, 1 = hearts, 2 = diamonds, 3 = spades
-	int m_value;
+	
+	char m_suit;	// [C]lubs, [H]earts, [D]iamonds, [S]pades
+	int m_value;	// 2-10, [J]ack, [Q]ueen, [K]ing, [A]ce
 };
 

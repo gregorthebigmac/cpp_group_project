@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include <deque>
 #include "card.h"
 
 class deck {
@@ -8,7 +9,8 @@ public:
 
 	// DEBUG
 	void _debug_dump_deck();
+
 private:
-	std::vector<card> m_cards;
+	std::deque<card> m_cards;
 };
 

@@ -1,5 +1,6 @@
-#pragma once
-#include "card.h"
+﻿#pragma once
+#include "deck.h"
+#include <string>
 
 class player {
 public:
@@ -7,16 +8,17 @@ public:
 	~player(){}
 
 	// getters
-	int get_low_total() { return m_low_total; }
-	int get_high_total() { return m_high_total; }
-	std::vector<card> get_hand() { return m_hand; }
+	std::string get_name() { return m_name; }
+	int get_total() { return m_total; }
+	std::deque<card> get_hand() { return m_hand; }
 
+	// setters
+	void set_name(std::string name) { m_name = name; }
 	void deal_card(card dealt_card) { m_hand.push_back(dealt_card); }
-	void calc_total();
 	void display_hand();
 
 private:
-	std::vector<card> m_hand;
-	int m_high_total;
-	int m_low_total;
+	std::string m_name;	// player name
+	std::deque<card> m_hand;	// player's "hand" of cards
+	int m_total;
 };
