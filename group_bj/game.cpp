@@ -10,7 +10,9 @@ void game::welcome_splash() {
 
 	system("CLS");
 	cout << "########################################" << endl;
-	cout << "      Welcome to ANSI Blackjack!        " << endl;
+	cout << "#                                      #" << endl;
+	cout << "#     Welcome to ANSI Blackjack!       #" << endl;
+	cout << "#                                      #" << endl;
 	cout << "########################################" << endl;
 	cout << endl;
 	cout << "What is your name?" << endl;
