@@ -3,13 +3,16 @@
 
 class game {
 public:
-	game() { m_game_over = false; }
+	game();
 	~game();
 
 	void welcome_splash();
-	void shuffle_deck();
-	void deal_card(player p);
+	void deal_card(player &p);
 	void game_loop();
+	void redraw();
+	void draw_actions();
+	void player_action();
+	bool is_game_over();
 
 private:
 	player p1, dealer;
