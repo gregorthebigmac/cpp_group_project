@@ -15,9 +15,24 @@ deck::deck(){
 				suit = 'S';
 			else std::cout << "deck::deck for loop broke!" << std::endl;
 			temp.set_suit(suit);
-			temp.set_value(y);
 			if (y == 1)
 				temp.set_ace();
+			else if (y == 11) {
+				temp.set_value(10);
+				temp.set_face('J');
+			}
+			else if (y == 12) {
+				temp.set_value(10);
+				temp.set_face('Q');
+			}
+			else if (y == 13) {
+				temp.set_value(10);
+				temp.set_face('K');
+			}
+			else {
+				temp.set_face(0);	// a '0' char is NULL. We're setting all non-face cards m_face variable to NULL
+				temp.set_value(y);	// all non-face cards just get the value of int y from the loop. Face cards and Ace are the only exceptions
+			}
 			m_cards.push_back(temp);
 		}
 	}
@@ -51,13 +66,12 @@ void deck::_debug_dump_deck() {
 		cout << "m_cards[" << i << "] = ";
 		if (m_cards[i].is_ace()) {
 			cout << "A||"; }
-		else if (m_cards[i].get_value() == 11) {
-			cout << "J||"; }
-		else if (m_cards[i].get_value() == 12) {
-			cout << "Q||"; }
-		else if (m_cards[i].get_value() == 13) {
-			cout << "K||"; }
-		else cout << m_cards[i].get_value();
+		else if (m_cards[i].get_value() == 10) {
+			if (m_cards[i].get_face() == 0)
+				cout << m_cards[i].get_value() << "|";
+			else cout << m_cards[i].get_face() << "||";
+		}
+		else cout << m_cards[i].get_value() << "||";
 		cout << m_cards[i].get_suit() << endl;
 	}
 }

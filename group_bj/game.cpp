@@ -2,7 +2,6 @@
 
 game::game() {
 	m_game_over = false;
-	dealer.set_is_dealer();
 }
 game::~game(){}
 
@@ -27,13 +26,13 @@ void game::welcome_splash() {
 	getline(cin, response);
 	if (response[0] == 'Y' || response[0] == 'y') {
 		p1.set_name(player_name);
-		dealer.set_name("Dealer");
+		p2.set_name("p2");
 		cout << "Welcome, " << p1.get_name() << "!" << endl;
 		m_deck.shuffle_deck();
 		deal_card(p1);
-		deal_card(dealer);
+		deal_card(p2);
 		deal_card(p1);
-		deal_card(dealer);
+		deal_card(p2);
 		game_loop();
 	}
 	else welcome_splash();
@@ -46,30 +45,12 @@ void game::deal_card(player &p) {
 
 void game::game_loop() {
 	while (m_game_over == false) {
-		while (p1.is_staying() == false) {
-			redraw();
-			if (is_game_over()) {
-				m_game_over = true;
-				break;
-			}
-			draw_actions();
-			player_action();
-		}
-		if (m_game_over)
-			break;
-		while (dealer.is_staying() == false) {
-			if (dealer.will_dealer_hit())
-				deal_card(dealer);
-			else dealer.stay();
-			redraw();
-			if (is_game_over()) {
-				m_game_over = true;
-				break;
-			}
-		}
+		std::cout << "In game loop. Nothing here yet..." << std::endl;
+		system("PAUSE");
 	}
 }
 
+/*
 void game::redraw() {
 	system("CLS");
 	using std::cout;
@@ -86,43 +67,43 @@ void game::redraw() {
 	cout << "Total: " << p1.get_total() << endl;
 	cout << endl << endl;
 	cout << endl << endl;
-	cout << dealer.get_name() << "'s hand:" << endl;
-	dealer.display_hand();
+	cout << p2.get_name() << "'s hand:" << endl;
+	p2.display_hand();
 	cout << endl;
-	cout << "Dealer is showing: " << dealer.get_total() << endl;
+	cout << "p2 is showing: " << p2.get_total() << endl;
 	cout << endl << endl;
 }
-
-void game::draw_actions() {
+*/
+void game::draw_actions(player &p) {
 	using std::cout;
 	using std::endl;
-	p1.set_can_flip_ace(false);
-	p1.set_can_hit(false);
+	p.set_can_flip_ace(false);
+	p.set_can_hit(false);
 	cout << "Press the key in [ ] + [ENTER] to perform the indicated action." << endl << endl;
 	cout << "[Q] Quit   [S] Stay   ";
-	if (p1.get_total() < 21)
-		p1.set_can_hit(true);
+	if (p.get_total() < 21)
+		p.set_can_hit(true);
 	else {
-		p1.stay();
+		p.stay();
 		return;
 	}
-	std::vector<char> aces = p1.get_player_aces();
+	std::vector<char> aces = p.get_player_aces();
 	if (aces[0] != 'n')
-		p1.set_can_flip_ace(true);
-	if (p1.can_hit())
+		p.set_can_flip_ace(true);
+	if (p.can_hit())
 		cout << "[H] Hit   ";
-	if (p1.can_flip_ace())
+	if (p.can_flip_ace())
 		cout << "[F] Flip Ace";
 	cout << endl << endl;
 }
 
-void game::player_action() {
+void game::player_action(player &p) {
 	char action;
 	std::string response;
 	getline(std::cin, response);
 	action = response[0];
 	if (action == 's' || action == 'S')
-		p1.stay();
+		p.stay();
 	else if (action == 'q' || action == 'Q') {
 		std::cout << "Are you sure you want to end the game? y/n" << std::endl;
 		getline(std::cin, response);
@@ -133,14 +114,14 @@ void game::player_action() {
 		}
 	}
 	else if (action == 'h' || action == 'H') {
-		if (p1.can_hit()) {
+		if (p.can_hit()) {
 			deal_card(p1);
 			return;
 		}
 	}
 	else if (action == 'f' || action == 'F') {
-		if (p1.can_flip_ace()) {
-			p1.flip_ace();
+		if (p.can_flip_ace()) {
+			p.flip_ace();
 			return;
 		}
 	}
@@ -154,16 +135,15 @@ void game::player_action() {
 //			There are still some incorrect scenarios playing out. Track 'em down!
 bool game::is_game_over() {
 	if (p1.get_total() == 21) {
-		if (dealer.get_total() == 21) {
+		if (p2.get_total() == 21) {
 			std::cout << "Both got exactly 21! Game is a draw!" << std::endl;
 			m_game_over = true;
 			return true;
 		}
-		else if (dealer.get_total() < 21) {
+		else if (p2.get_total() < 21)
 			return false;
-		}
 	}
-	else if (dealer.get_total() == 21) {
+	else if (p2.get_total() == 21) {
 		if (p1.get_total() > 21) {
 			if (p1.can_flip_ace()) {
 				bool score_can_go_down = false;
@@ -179,11 +159,11 @@ bool game::is_game_over() {
 				return score_can_go_down;
 			}
 		}
-		std::cout << "Dealer has 21! House wins!" << std::endl;
+		std::cout << "p2 has 21! House wins!" << std::endl;
 		return true;
 	}
 	else if (p1.get_total() > 21) {
-		if (dealer.get_total() > 21)
+		if (p2.get_total() > 21)
 			std::cout << "Both busted! Game is a draw!" << std::endl;
 		else {
 			std::cout << "Bust! You lose!" << std::endl;
@@ -192,14 +172,14 @@ bool game::is_game_over() {
 			return true;
 		}
 	}
-	else if (dealer.get_total() > 21) {
-			std::cout << "Dealer Busts! You Win!" << std::endl;
+	else if (p2.get_total() > 21) {
+			std::cout << "p2 Busts! You Win!" << std::endl;
 			system("PAUSE");
 			m_game_over = true;
 			return true;
 	}
 	else if (p1.get_total() < 21) {
-		if (dealer.get_total() < 21) {
+		if (p2.get_total() < 21) {
 			return false;
 		}
 	}
