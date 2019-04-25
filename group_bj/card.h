@@ -15,6 +15,7 @@ public:
 	int get_value() { return m_value; }
 	bool is_ace() { return m_is_ace; }
 	char get_face() { return m_face; }
+	bool is_hidden() { return m_is_hidden; }
 
 	// setters
 	void set_suit(char suit) { m_suit = suit; }

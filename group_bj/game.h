@@ -18,6 +18,7 @@ public:
 	bool is_round_over();
 	bool is_game_over();
 	bool confirm(std::string question);
+	void new_round();
 	
 	//void redraw();
 

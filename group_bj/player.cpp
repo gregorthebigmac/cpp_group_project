@@ -13,7 +13,8 @@ player::player() {	// ctor
 int player::get_total() {
 	int total = 0;
 	for (int i = 0; i < m_hand.size(); i++) {
-		total = total + m_hand[i].get_value();
+		if (m_hand[i].is_hidden() == false)
+			total = total + m_hand[i].get_value();
 	}
 	m_total = total;
 	return m_total;
@@ -81,8 +82,12 @@ void player::display_hand(char me_or_them) {
 	for (int i = 0; i < m_hand.size(); i++) {
 		int card_num = i + 1;
 		cout << "Card " << card_num << ": ";
-		if (i == 0)
-			cout << "[Hidden]" << endl;
+		if (i == 0 && me_or_them == 't') {
+				if (m_hand[i].is_hidden() == false)
+					m_hand[i].flip_hidden();
+				cout << "[Hidden]" << endl;
+				continue;
+		}
 		else if (m_hand[i].is_ace()) {
 			cout << "A||" << m_hand[i].get_suit();
 			cout << m_hand[i].get_value();
@@ -93,16 +98,18 @@ void player::display_hand(char me_or_them) {
 			continue;
 		}
 		else {
-			if (m_hand[i].get_value() == 10)
-				cout << "J||";
-			else if (m_hand[i].get_value() == 12)
-				cout << "Q||";
-			else if (m_hand[i].get_value() == 13)
-				cout << "K||";
+			if (m_hand[i].get_value() == 10) {
+				if (m_hand[i].get_face() == 0) {
+					cout << m_hand[i].get_value() << "|";
+				}
+				else {
+					cout << m_hand[i].get_face() << "|";
+				}
+			}
 			else {
 				cout << m_hand[i].get_value();
-				if (m_hand[i].get_value() != 10)
-					cout << "|";
+				if (m_hand[i].get_value() != 10) {
+					cout << "|"; }
 			}
 		}
 		cout << "|" << m_hand[i].get_suit() << endl;

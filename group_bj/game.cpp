@@ -25,13 +25,8 @@ void game::welcome_splash() {
 }
 
 void game::init_round() {
-	if (p1.has_screen_control() == false && p2.has_screen_control() == false)
-		p2.toggle_screen_control();
-	else if (p1.has_screen_control()) {
-		p1.toggle_screen_control();
-		p2.toggle_screen_control();
-	}
-	switch_players();
+	system("CLS");
+	p1.toggle_screen_control();
 	p1.place_bet();
 	switch_players();
 	p2.place_bet();
@@ -40,33 +35,8 @@ void game::init_round() {
 	deal_card(p1);
 	deal_card(p2);
 
-	if (p1.get_bet() > p2.get_bet()) {
-		if (p1.has_screen_control()) {
-			bool done = false;
-			while (!done) {
-				std::cout << "[R] Raise bet   [S] Stay" << std::endl;
-				std::string response;
-				getline(std::cin, response);
-				if (response[0] == 'r' || response[0] == 'R') {
-					std::cout << "Raise bet by how much?" << std::endl;
-					getline(std::cin, response);
-					std::string::size_type sz;
-					int raise = std::stoi(response, &sz);
-					if (raise > p1.get_money()) {
-						if (confirm("Insufficient funds! Max out bet?!"))
-							p1.increase_bet(p1.get_money());
-						else continue;
-					}
-					else {
-						int total_bet = p1.get_bet() + raise;
-						done = true;
-					}
-				}
-				else done = true;
-			}
-			game_loop(p1, p2);
-		}
-	}
+	if (p1.get_bet() > p2.get_bet())
+		game_loop(p1, p2);
 	else if (p1.get_bet() < p2.get_bet())
 		game_loop(p2, p1);
 	else {
@@ -91,8 +61,8 @@ void game::switch_players() {
 		std::cout << "and " << p2.get_name() << ", press[ENTER] when you ready." << std::endl;
 	}
 	else {
-		std::cout << "Okay, " << p1.get_name() << ". Please hand the laptop to " << p2.get_name() << "," << std::endl;
-		std::cout << "and " << p2.get_name() << ", press[ENTER] when you ready." << std::endl;
+		std::cout << "Okay, " << p2.get_name() << ". Please hand the laptop to " << p1.get_name() << "," << std::endl;
+		std::cout << "and " << p1.get_name() << ", press[ENTER] when you ready." << std::endl;
 	}
 	p1.toggle_screen_control();
 	p2.toggle_screen_control();
@@ -114,6 +84,8 @@ void game::game_loop(player &first, player &second) {
 				first.begin_turn();
 			while (first.is_turn_over() == false) {
 				player_turn(first, second);
+				if (m_round_over)
+					break;
 			}
 			if (second.is_staying() == false)
 				if (first.has_screen_control())
@@ -121,12 +93,18 @@ void game::game_loop(player &first, player &second) {
 				second.begin_turn();
 			while (second.is_turn_over() == false) {
 				player_turn(second, first);
+				if (m_round_over)
+					break;
 			}
 			if (first.is_staying() && second.is_staying())
 				is_round_over();
 			if (first.has_screen_control() == second.has_screen_control())
 				first.toggle_screen_control();
+			first.set_hit_this_turn(false);
+			second.set_hit_this_turn(false);
+			is_round_over();
 		}
+		new_round();
 		init_round();
 	}
 }
@@ -190,6 +168,7 @@ void game::player_action(player &p) {
 	action = response[0];
 	if (action == 's' || action == 'S') {
 		p.stay();
+		p.end_turn();
 	}
 	else if (action == 'q' || action == 'Q') {
 		std::cout << "Are you sure you want to end the game? y/n" << std::endl;
@@ -203,10 +182,14 @@ void game::player_action(player &p) {
 		}
 	}
 	else if (action == 'h' || action == 'H') {
-		if (p.can_hit()) {
-			deal_card(p);
-			p.set_can_hit(false);
+		if (p.has_hit_this_turn())
 			return;
+		else {
+			if (p.can_hit()) {
+				deal_card(p);
+				p.set_hit_this_turn(true);
+				return;
+			}
 		}
 	}
 	else if (action == 'f' || action == 'F') {
@@ -216,9 +199,7 @@ void game::player_action(player &p) {
 		}
 	}
 	else if (action == 'e' || action == 'E') {
-		std::cout << "End turn? y/n" << std::endl;
-		std::string response;
-		if (response[0] == 'y' || response[0] == 'Y')
+		if (confirm ("End turn? y/n"))
 			p.end_turn();
 		else return;
 	}
@@ -259,39 +240,58 @@ bool game::is_round_over() {
 		cout << p2.get_name() << " wins!" << endl;
 		p2.win_bet(p1.get_bet());
 		p1.reset_bet();
-		return true;
+		m_round_over = true;
+		return m_round_over;
 	}
 	else if (p1.get_total() < 22 && p2.get_total() > 21) {
 		cout << p1.get_name() << " wins!" << endl;
 		p1.win_bet(p2.get_bet());
 		p2.reset_bet();
-		return true;
+		m_round_over = true;
+		return m_round_over;
 	}
 	else if (p1.get_total() < 21 && p2.get_total() < 21) {
 		if (p1.get_total() > p2.get_total()) {
 			cout << p1.get_name() << " wins!" << endl;
 			p1.win_bet(p2.get_bet());
 			p2.reset_bet();
-			return true;
+			m_round_over = true;
+			return m_round_over;
 		}
 		else if (p1.get_total() < p2.get_total()) {
 			cout << p2.get_name() << " wins!" << endl;
 			p2.win_bet(p1.get_bet());
 			p2.reset_bet();
 			p1.reset_bet();
-			return true;
+			m_round_over = true;
+			return m_round_over;
 		}
 		else if (p1.get_total() == p2.get_total()) {
 			cout << "It's a draw! Both players get their money back!" << endl;
 			p1.win_bet(0);
 			p2.win_bet(0);
-			return true;
+			m_round_over = true;
+			return m_round_over;
 		}
 		else {
 			cout << "I don't know how you got here, but something went wrong!" << endl;
-			return false;
+			m_round_over = true;
+			return m_round_over;
 		}
 	}
+	else {
+		cout << "I don't know how you got here, but something went wrong!" << endl;
+		m_round_over = true;
+		return m_round_over;
+	}
+}
+
+void game::new_round() {
+	deck temp_deck;
+	temp_deck.shuffle_deck();
+	m_deck = temp_deck;
+	p1.reset_hand();
+	p2.reset_hand();
 }
 
 bool game::is_game_over() {

@@ -21,6 +21,7 @@ public:
 	int get_bet() { return m_bet; }
 	bool has_screen_control() { return m_controls_screen; }
 	int get_money() { return m_wallet; }
+	bool has_hit_this_turn() { return m_hit_this_turn; }
 
 	// setters
 	void set_name(int player_num);
@@ -31,6 +32,7 @@ public:
 	void reset_bet() { m_bet = 0; }
 	void stay() { m_stay = true; }
 	void toggle_screen_control() { m_controls_screen = !m_controls_screen; }
+	void set_hit_this_turn(bool hit) { m_hit_this_turn = hit; }
 
 	// doers
 	void place_bet();
@@ -40,6 +42,7 @@ public:
 	void increase_bet(int amount) { m_bet = m_bet + amount; }
 	void win_bet(int their_bet) { m_wallet = m_wallet + m_bet + their_bet; }
 	void round_is_a_draw() { m_wallet = m_wallet + m_bet; }
+	void reset_hand() { m_hand.clear(); }
 
 private:
 	std::string m_name;			// player name
@@ -47,6 +50,7 @@ private:
 	int m_total;				// Sum of cards in player's hand.
 	bool m_can_flip_ace;		// Flag to show if any of the player's cards are aces and can be flipped.
 	bool m_can_hit;				// If the player has less than 21, this is TRUE.
+	bool m_hit_this_turn;		// If the player drew a card this turn, then this is TRUE.
 	bool m_stay;				// Once this goes TRUE, the player is ready to reveal their cards
 	bool m_turn_end;			// Once this goes TRUE, the player's turn ends.
 	int m_wallet;				// The amount of money the player has in their wallet
