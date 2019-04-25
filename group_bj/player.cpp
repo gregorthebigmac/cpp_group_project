@@ -81,6 +81,7 @@ void player::flip_ace() {
 		std::string response;
 		getline(std::cin, response);
 		char choice = response[0];
+		putchar(toupper(choice));	// I think this is what was causing it to break. Need to test this.
 		for (int i = 0; i < m_hand.size(); i++) {
 			if (m_hand[i].is_ace()) {
 				if (choice == m_hand[i].get_suit()) {
