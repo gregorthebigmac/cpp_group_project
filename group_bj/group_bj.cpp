@@ -18,6 +18,7 @@ int main() {
 char new_game() {
 	game g;
 	g.welcome_splash();
+	g.init_round();
 	cout << "That was fun! Play again? y/n" << endl;
 	string response;
 	getline(cin, response);

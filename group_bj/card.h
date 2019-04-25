@@ -39,9 +39,8 @@ public:
 
 private:
 	char m_suit;		// [C]lubs, [H]earts, [D]iamonds, [S]pades
-	int m_value;		// 2-10, 11 = [J]ack, 12 = [Q]ueen, 13 = [K]ing, 1/11 = [A]ce
-	char m_face;		// [J]ack, [Q]ueen, [K]ing
+	int m_value;		// 2-10
+	char m_face;		// [J]ack, [Q]ueen, [K]ing (each has a value of 10)
 	bool m_is_ace;		// Because Jack = 11 and Ace CAN = 11, we need a bool flag to track whether this is a Jack or an Ace
 	bool m_is_hidden;	// The dealer has one hidden card at the start of each game, and is not revealed until the end.
 };
-
