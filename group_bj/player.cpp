@@ -61,7 +61,7 @@ void player::place_bet() {
 		cout << m_name << ": How much for your starting bet? Minimum of $10" << endl;
 		getline(cin, str_bet);
 		std::string::size_type sz;
-		bet = std::stoi(str_bet, &sz);
+		bet = std::stoi(str_bet, &sz); // this needs to have a throw/catch to handle exceptions.
 		if (bet < 10)
 			cout << "Sorry, minimum bet is $10. Try again." << endl;
 		else {
