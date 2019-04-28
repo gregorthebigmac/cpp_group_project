@@ -13,8 +13,8 @@ public:
 	void game_loop(player &first, player &second);
 	void player_turn(player &me, player &them);
 	void draw_player_hud(player &me, player &them);
-	void draw_actions(player &p);
-	void player_action(player &p);
+	void draw_actions(player &me, player &them);
+	void player_action(player &me, player &them);
 	bool is_round_over();
 	bool is_game_over();
 	bool confirm(std::string question);

@@ -4,6 +4,9 @@
 class card {
 public:
 	card() {
+		m_suit = 0;
+		m_value = 0;
+		m_face = 0;
 		// These values are always false by default
 		m_is_ace = false;
 		m_is_hidden = false;
@@ -40,7 +43,7 @@ public:
 
 private:
 	char m_suit;		// [C]lubs, [H]earts, [D]iamonds, [S]pades
-	int m_value;		// 2-10
+	int m_value;		// 1-11
 	char m_face;		// [J]ack, [Q]ueen, [K]ing (each has a value of 10)
 	bool m_is_ace;		// Because Jack = 11 and Ace CAN = 11, we need a bool flag to track whether this is a Jack or an Ace
 	bool m_is_hidden;	// The dealer has one hidden card at the start of each game, and is not revealed until the end.

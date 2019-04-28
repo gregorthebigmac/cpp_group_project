@@ -13,10 +13,15 @@ deck::deck(){
 				suit = 'D';
 			else if (x == 3)
 				suit = 'S';
-			else std::cout << "deck::deck for loop broke!" << std::endl;
+			else {
+				std::cout << "deck::deck for loop broke!" << std::endl;
+				break;
+			}
 			temp.set_suit(suit);
-			if (y == 1)
+			if (y == 1) {
 				temp.set_ace();
+				temp.set_value(1);
+			}
 			else if (y == 11) {
 				temp.set_value(10);
 				temp.set_face('J');

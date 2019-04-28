@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <ctype.h>
+#include <exception>
 
 class player {
 public:
@@ -14,7 +15,6 @@ public:
 	std::vector<char> get_player_aces();
 	std::string get_name() { return m_name; }
 	std::deque<card> get_hand() { return m_hand; }
-	bool can_hit() { return m_can_hit; }
 	bool can_flip_ace() { return m_can_flip_ace; }
 	bool is_staying() { return m_stay; }
 	bool is_turn_over() { return m_turn_end; }
@@ -22,6 +22,7 @@ public:
 	bool has_screen_control() { return m_controls_screen; }
 	int get_money() { return m_wallet; }
 	bool has_hit_this_turn() { return m_hit_this_turn; }
+	bool can_hit();
 
 	// setters
 	void set_name(int player_num);
@@ -43,6 +44,8 @@ public:
 	void win_bet(int their_bet) { m_wallet = m_wallet + m_bet + their_bet; }
 	void round_is_a_draw() { m_wallet = m_wallet + m_bet; }
 	void reset_hand() { m_hand.clear(); }
+	void match_bet(int difference);
+	void raise_bet();
 
 private:
 	std::string m_name;			// player name

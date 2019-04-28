@@ -1,10 +1,14 @@
 ﻿#include "player.h"
-#include <exception>
 
 player::player() {	// ctor
+	m_bet = 0;
 	m_wallet = 100;
 	m_total = 0;
 	// These are all false by default
+	m_turn_end = false;
+	m_stay = false;
+	m_controls_screen = false;
+	m_hit_this_turn = false;
 	m_can_flip_ace = false;
 	m_can_hit = false;
 }
@@ -19,6 +23,12 @@ int player::get_total() {
 	}
 	m_total = total;
 	return m_total;
+}
+
+bool player::can_hit() {
+	if (m_hit_this_turn) {
+		return false; }
+	else return m_can_hit;
 }
 
 std::vector<char> player::get_player_aces() {
@@ -59,6 +69,7 @@ void player::place_bet() {
 	int bet = 0;
 	string str_bet;
 	while (bet < 10) {
+		system("CLS");
 		cout << m_name << ": How much for your starting bet? Minimum of $10," << endl;
 		cout << "and your current funds are $" << m_wallet << "." << endl;
 		getline(cin, str_bet);
@@ -69,6 +80,7 @@ void player::place_bet() {
 			bet = std::stoi(str_bet, &sz); }
 		catch (std::exception &e) {
 			cout << "\"" << str_bet << "\" is not a number!" << endl;
+			system("PAUSE");
 			continue;
 		}
 
@@ -76,6 +88,7 @@ void player::place_bet() {
 			cout << "Sorry, minimum bet is $10. Try again." << endl;
 		else if (bet > m_wallet) {
 			cout << "You cannot bet more money than you have!" << endl;
+			system("PAUSE");
 			bet = 0;
 			continue;
 		}
@@ -99,18 +112,22 @@ void player::display_hand(char me_or_them) {
 		int card_num = i + 1;
 		cout << "Card " << card_num << ": ";
 		if (i == 0 && me_or_them == 't') {
-				if (m_hand[i].is_hidden() == false)
-					m_hand[i].flip_hidden();
-				cout << "[Hidden]" << endl;
-				continue;
+			if (m_hand[i].is_hidden() == false)
+				m_hand[i].flip_hidden();
+			cout << "[Hidden]" << endl;
+			continue;
 		}
-		else if (m_hand[i].is_ace()) {
+		if (i == 0 && me_or_them == 'm') {
+			if (m_hand[i].is_hidden() == true) {
+				m_hand[i].flip_hidden(); }
+		}
+		if (m_hand[i].is_ace()) {
 			cout << "A||" << m_hand[i].get_suit();
-			cout << m_hand[i].get_value();
+			//cout << m_hand[i].get_value();
 			if (m_hand[i].get_value() == 1)
-				cout << " (LOW)" << endl;
+				cout << "  (LOW)" << endl;
 			else if (m_hand[i].get_value() == 11)
-				cout << " (HIGH)" << endl;
+				cout << "  (HIGH)" << endl;
 			continue;
 		}
 		else {
@@ -129,6 +146,71 @@ void player::display_hand(char me_or_them) {
 			}
 		}
 		cout << "|" << m_hand[i].get_suit() << endl;
+	}
+}
+
+void player::match_bet(int difference) {
+	using std::cout;
+	using std::endl;
+	using std::string;
+	using std::cin;
+
+	if (difference > m_wallet) {
+		cout << "You don't have enough money to match their current bet. Go all in? y/n" << endl;
+		string response;
+		getline(cin, response);
+		if (response[0] == 'y' || response[0] == 'Y') {
+			m_bet = m_wallet + m_bet;
+			m_wallet = 0;
+		}
+	}
+	else {
+		m_bet = m_bet + difference;
+		m_wallet = m_wallet - difference;
+	}
+}
+
+void player::raise_bet() {
+	using std::cout;
+	using std::endl;
+	using std::string;
+	using std::cin;
+	bool should_raise_bet = false;
+	int raise = 0;
+	int total_bet = 0;
+	if (m_wallet > 0) {
+		cout << "Raise bet by how much?" << endl;
+		string response;
+		getline(cin, response);
+		string::size_type sz;
+		try {
+			raise = std::stoi(response, &sz);
+			should_raise_bet = true;
+		}
+		catch (std::exception & e) {
+			cout << "\"" << response << "\" is not a number!" << endl;
+		}
+
+		if (should_raise_bet) {
+			if (raise > m_wallet) {
+				cout << "Insufficient Funds!" << endl;
+				return;
+			}
+			total_bet = m_bet + raise;
+			string question = "Raise bet to $";
+			string str_bet = std::to_string(total_bet);
+			question = question + str_bet;
+			question = question + "?";
+			getline(cin, response);
+			if (response[0] == 'y' || response[0] == 'Y')
+				increase_bet(raise);
+			else return;
+		}
+		else return;
+	}
+	else {
+		cout << "Insufficient Funds!" << endl;
+		return;
 	}
 }
 

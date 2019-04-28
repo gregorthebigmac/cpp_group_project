@@ -1,4 +1,5 @@
 ﻿#include "game.h"
+#include <Windows.h>
 
 using std::cout;
 using std::cin;
@@ -8,6 +9,10 @@ using std::string;
 char new_game();
 
 int main() {
+	HWND console = GetConsoleWindow();
+	RECT r;
+	GetWindowRect(console, &r);
+	MoveWindow(console, r.left, r.top, 1000, 1000, TRUE);
 	char play_again = 'y';
 	while (play_again == 'y') {
 		play_again = new_game();
