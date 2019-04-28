@@ -87,6 +87,8 @@ void game::game_loop(player &first, player &second) {
 				if (m_round_over)
 					break;
 			}
+			if (m_game_over) {
+				break; }
 			if (second.is_staying() == false)
 				if (first.has_screen_control())
 					switch_players();
@@ -104,8 +106,14 @@ void game::game_loop(player &first, player &second) {
 			second.set_hit_this_turn(false);
 			is_round_over();
 		}
-		new_round();
-		init_round();
+		if (m_game_over) {
+			break; }
+		else {
+			if (m_round_over) {
+				new_round();
+				init_round();
+			}
+		}
 	}
 }
 

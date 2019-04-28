@@ -59,24 +59,33 @@ void player::place_bet() {
 	int bet = 0;
 	string str_bet;
 	while (bet < 10) {
-		cout << m_name << ": How much for your starting bet? Minimum of $10" << endl;
+		cout << m_name << ": How much for your starting bet? Minimum of $10," << endl;
+		cout << "and your current funds are $" << m_wallet << "." << endl;
 		getline(cin, str_bet);
 		std::string::size_type sz;
-		// If the player doesn't enter a number, an exception will occur, and needs to be handled.
+		
+		// If the player doesn't enter a number, an exception will occur. This try-catch block handles it.
 		try { 
 			bet = std::stoi(str_bet, &sz); }
 		catch (std::exception &e) {
-			cout << str_bet << " is not a number!" << endl;
+			cout << "\"" << str_bet << "\" is not a number!" << endl;
 			continue;
 		}
+
 		if (bet < 10)
 			cout << "Sorry, minimum bet is $10. Try again." << endl;
+		else if (bet > m_wallet) {
+			cout << "You cannot bet more money than you have!" << endl;
+			bet = 0;
+			continue;
+		}
 		else {
 			cout << "You want to bet $" << bet << ". Correct? y/n" << endl;
 			string response;
 			getline(cin, response);
-			if (response[0] != 'y' && response[0] != 'Y')
-				bet = 0;
+			if (response[0] == 'y' || response[0] == 'Y')
+				continue;
+			else bet = 0;
 		}
 	}
 	m_bet = bet;
