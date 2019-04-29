@@ -11,6 +11,7 @@ player::player() {	// ctor
 	m_hit_this_turn = false;
 	m_can_flip_ace = false;
 	m_can_hit = false;
+	m_can_stay = true;
 }
 
 /////////////// GETTERS ///////////////
@@ -66,12 +67,18 @@ void player::place_bet() {
 	using std::string;
 	using std::cin;
 
+	bool bet_is_valid = false;
 	int bet = 0;
 	string str_bet;
-	while (bet < 10) {
+	if (m_wallet == 0) {
+		cout << "Somehow you broke me. The game is over!" << endl;
+		return;
+	}
+	while (bet_is_valid == false) {
 		system("CLS");
 		cout << m_name << ": How much for your starting bet? Minimum of $10," << endl;
 		cout << "and your current funds are $" << m_wallet << "." << endl;
+		cout << "If your current funds are less than $10 you must go all in." << endl;
 		getline(cin, str_bet);
 		std::string::size_type sz;
 		
@@ -84,8 +91,21 @@ void player::place_bet() {
 			continue;
 		}
 
-		if (bet < 10)
-			cout << "Sorry, minimum bet is $10. Try again." << endl;
+		if (bet < 10) {
+			if (m_wallet < 10) {
+				if (bet < m_wallet) {
+					cout << "You have less than $10 in your wallet, therefore you must go all in." << endl; }
+				else if (bet > m_wallet) {
+					cout << "You cannot bet more money than you have!" << endl; }
+				else {
+					string question = "You want to bet $" + str_bet + ". Correct? y/n";
+					if (confirm(question)) {
+						bet_is_valid = true; }
+				}
+			}
+			else {
+				cout << "Sorry, minimum bet is $10. Try again." << endl; }
+		}
 		else if (bet > m_wallet) {
 			cout << "You cannot bet more money than you have!" << endl;
 			system("PAUSE");
@@ -93,11 +113,9 @@ void player::place_bet() {
 			continue;
 		}
 		else {
-			cout << "You want to bet $" << bet << ". Correct? y/n" << endl;
-			string response;
-			getline(cin, response);
-			if (response[0] == 'y' || response[0] == 'Y')
-				continue;
+			string question = "You want to bet $" + str_bet + ". Correct? y/n";
+			if (confirm(question)) {
+				bet_is_valid = true; }
 			else bet = 0;
 		}
 	}
@@ -123,7 +141,6 @@ void player::display_hand(char me_or_them) {
 		}
 		if (m_hand[i].is_ace()) {
 			cout << "A||" << m_hand[i].get_suit();
-			//cout << m_hand[i].get_value();
 			if (m_hand[i].get_value() == 1)
 				cout << "  (LOW)" << endl;
 			else if (m_hand[i].get_value() == 11)
@@ -156,10 +173,7 @@ void player::match_bet(int difference) {
 	using std::cin;
 
 	if (difference > m_wallet) {
-		cout << "You don't have enough money to match their current bet. Go all in? y/n" << endl;
-		string response;
-		getline(cin, response);
-		if (response[0] == 'y' || response[0] == 'Y') {
+		if (confirm("You don't have enough money to match their current bet. Go all in? y/n")) {
 			m_bet = m_wallet + m_bet;
 			m_wallet = 0;
 		}
@@ -201,9 +215,8 @@ void player::raise_bet() {
 			string str_bet = std::to_string(total_bet);
 			question = question + str_bet;
 			question = question + "?";
-			getline(cin, response);
-			if (response[0] == 'y' || response[0] == 'Y')
-				increase_bet(raise);
+			if (confirm(question)) {
+				increase_bet(raise); }
 			else return;
 		}
 		else return;
@@ -250,4 +263,13 @@ void player::flip_ace() {
 				m_hand[i].flip_ace();
 		}
 	}
+}
+
+bool player::confirm(std::string question) {
+	std::cout << question << std::endl;
+	std::string response;
+	getline(std::cin, response);
+	if (response[0] == 'y' || response[0] == 'Y')
+		return true;
+	else return false;
 }
