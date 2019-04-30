@@ -327,7 +327,7 @@ bool game::is_round_over() {
 			p2.reset_bet();
 			return true;
 		}
-		else if (p2.get_total() < p2.get_total()) {
+		else if (p1.get_total() < p2.get_total()) {
 			reveal_cards();
 			cout << p2.get_name() << " wins!" << endl;
 			system("PAUSE");
