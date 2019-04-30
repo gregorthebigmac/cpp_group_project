@@ -44,7 +44,7 @@ public:
 	void calc_total();
 	void flip_ace();
 	void draw_card(card _card);
-	void increase_bet(int amount) { m_bet = m_bet + amount; }
+	void increase_bet(int amount);
 	void win_bet(int their_bet) { m_wallet = m_wallet + m_bet + their_bet; }
 	void round_is_a_draw() { m_wallet = m_wallet + m_bet; }
 	void reset_hand() { m_hand.clear(); }
