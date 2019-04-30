@@ -51,6 +51,7 @@ public:
 	void match_bet(int difference);
 	void raise_bet();
 	bool confirm(std::string question);
+	void round_reset();
 
 private:
 	std::string m_name;			// player name

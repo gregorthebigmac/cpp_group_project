@@ -3,15 +3,9 @@
 player::player() {	// ctor
 	m_bet = 0;
 	m_wallet = 100;
-	m_total = 0;
-	// These are all false by default
-	m_turn_end = false;
-	m_stay = false;
 	m_controls_screen = false;
-	m_hit_this_turn = false;
-	m_can_flip_ace = false;
-	m_can_hit = false;
-	m_can_stay = true;
+	// this is re-used for resetting after each round
+	round_reset();
 }
 
 /////////////// GETTERS ///////////////
@@ -285,4 +279,14 @@ bool player::confirm(std::string question) {
 	if (response[0] == 'y' || response[0] == 'Y')
 		return true;
 	else return false;
+}
+
+void player::round_reset() {
+	m_total = 0;
+	m_turn_end = false;
+	m_stay = false;
+	m_hit_this_turn = false;
+	m_can_flip_ace = false;
+	m_can_hit = false;
+	m_can_stay = true;
 }

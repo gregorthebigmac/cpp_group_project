@@ -114,6 +114,8 @@ void game::game_loop(player &first, player &second) {
 			if (m_round_over) {
 				std::cout << "End of the round. Starting new round." << std::endl;
 				system("PAUSE");
+				p1.round_reset();
+				p2.round_reset();
 				new_round();
 				init_round();
 			}

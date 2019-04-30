@@ -20,8 +20,6 @@ public:
 	bool confirm(std::string question);
 	void reveal_cards();
 	void new_round();
-	
-	//void redraw();
 
 private:
 	player p1, p2;
