@@ -206,11 +206,13 @@ void player::raise_bet() {
 		}
 		catch (std::exception & e) {
 			cout << "\"" << response << "\" is not a number!" << endl;
+			system("PAUSE");
 		}
 
 		if (should_raise_bet) {
 			if (raise > m_wallet) {
 				cout << "Insufficient Funds!" << endl;
+				system("PAUSE");
 				return;
 			}
 			total_bet = m_bet + raise;
@@ -226,6 +228,7 @@ void player::raise_bet() {
 	}
 	else {
 		cout << "Insufficient Funds!" << endl;
+		system("PAUSE");
 		return;
 	}
 }
