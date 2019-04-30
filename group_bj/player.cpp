@@ -4,8 +4,14 @@ player::player() {	// ctor
 	m_bet = 0;
 	m_wallet = 100;
 	m_controls_screen = false;
-	// this is re-used for resetting after each round
-	round_reset();
+	// these all need to be reset after each round, and it's done in player::reset_round()
+	m_total = 0;
+	m_turn_end = false;
+	m_stay = false;
+	m_hit_this_turn = false;
+	m_can_flip_ace = false;
+	m_can_hit = false;
+	m_can_stay = true;
 }
 
 /////////////// GETTERS ///////////////

@@ -356,7 +356,7 @@ bool game::is_round_over() {
 		}
 		else if (p2.get_total() > 21) {
 			reveal_cards();
-			cout << p2.get_name() << " busts!" << p1.get_name() << " wins!" << endl;
+			cout << p2.get_name() << " busts! " << p1.get_name() << " wins!" << endl;
 			p1.win_bet(p2.get_bet());
 			p2.reset_bet();
 			return true;
@@ -388,7 +388,7 @@ bool game::is_game_over() {
 	}
 	else if (p2.get_money() < 1) {
 		if (p2.get_bet() < 1) {
-			cout << p1.get_money() << " wins!" << endl;
+			cout << p1.get_name() << " wins!" << endl;
 			system("PAUSE");
 			game_over = true;
 		}
