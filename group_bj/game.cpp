@@ -175,7 +175,7 @@ void game::draw_actions(player &me, player &them) {
 	//me.set_can_flip_ace(false);
 	//me.set_can_hit(false);
 	cout << "Press the key in [ ] + [ENTER] to perform the indicated action." << endl << endl;
-	if (me.get_bet() < them.get_bet()) {	// this condition is problematic.
+	if (me.get_bet() < them.get_bet()) {
 		if (me.get_money() > 0) {
 			cout << "You must match " << them.get_name() << "'s bet before proceeding." << endl;
 			std::string name = them.get_name();
@@ -183,39 +183,34 @@ void game::draw_actions(player &me, player &them) {
 			if (confirm(match_bet)) {
 				int diff = them.get_bet() - me.get_bet();
 				me.match_bet(diff);
-				draw_player_hud(me, them);
-				draw_actions(me, them);
 			}
-			else m_round_over = is_round_over();
 		}
 	}
-	else { // it's skipping this because the player is close to going broke, and it's an else statement, so it just skips it.
-		if (me.get_total() > 21) {
-			cout << "Total is " << me.get_total() << ". Busted!" << endl;
-			me.end_turn();
-			system("PAUSE");
-			return;
-		}
-		cout << "[Q] Quit   ";
-		if (me.get_total() < 21) {
-			me.set_can_hit(true);
-			cout << "[S] Stay   ";
-		}
-		if (me.get_money() > 0) {
-			if (me.get_bet() < them.get_bet()) {
-				cout << "[M] Match Bet   ";
-			}
-			else { cout << "[R] Raise Bet   "; }
-		}
-		std::vector<char> aces = me.get_player_aces();
-		if (aces[0] != 'n')
-			me.set_can_flip_ace(true);
-		if (me.can_hit())
-			cout << "[H] Hit   ";
-		if (me.can_flip_ace())
-			cout << "[F] Flip Ace   ";
-		cout << "[E] End Turn   " << endl << endl;
+	if (me.get_total() > 21) {
+		cout << "Total is " << me.get_total() << ". Busted!" << endl;
+		me.end_turn();
+		system("PAUSE");
+		return;
 	}
+	cout << "[Q] Quit   ";
+	if (me.get_total() < 21) {
+		me.set_can_hit(true);
+		cout << "[S] Stay   ";
+	}
+	if (me.get_money() > 0) {
+		if (me.get_bet() < them.get_bet()) {
+			cout << "[M] Match Bet   ";
+		}
+		else { cout << "[R] Raise Bet   "; }
+	}
+	std::vector<char> aces = me.get_player_aces();
+	if (aces[0] != 'n')
+		me.set_can_flip_ace(true);
+	if (me.can_hit())
+		cout << "[H] Hit   ";
+	if (me.can_flip_ace())
+		cout << "[F] Flip Ace   ";
+	cout << "[E] End Turn   " << endl << endl;
 }
 
 void game::player_action(player &me, player &them) {
