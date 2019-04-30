@@ -286,7 +286,7 @@ bool game::is_round_over() {
 		p1.round_is_a_draw();
 		p2.round_is_a_draw();
 		return true;
-	}
+	}	// NOTE TO SELF RIGHT NOW: Just run it with breakpoints all along the game loop and figure out where it's breaking.
 	if (p1.is_staying() && p2.is_staying()) {
 		if (p1.get_total() > p2.get_total()) {
 			reveal_cards();
