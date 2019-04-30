@@ -35,11 +35,13 @@ void game::init_round() {
 	deal_card(p2);
 	deal_card(p1);
 	deal_card(p2);
+	p1.calc_total();
+	p2.calc_total();
 
-	if (p1.get_bet() > p2.get_bet())
-		game_loop(p1, p2);
-	else if (p1.get_bet() < p2.get_bet())
-		game_loop(p2, p1);
+	if (p1.get_bet() > p2.get_bet()) {
+		game_loop(p1, p2); }
+	else if (p1.get_bet() < p2.get_bet()) {
+		game_loop(p2, p1); }
 	else {
 		std::cout << "Both player's bets are the same! Now choosing one at random...";
 		srand(time(NULL));
@@ -74,6 +76,7 @@ void game::switch_players() {
 void game::deal_card(player &p) {
 	card _card = m_deck.draw_card();
 	p.draw_card(_card);
+	p.calc_total();
 }
 
 void game::game_loop(player &first, player &second) {
@@ -122,6 +125,8 @@ void game::player_turn(player &me, player &them) {
 	while (me.is_turn_over() == false) {
 		draw_player_hud(me, them);
 		draw_actions(me, them);
+		if (me.is_turn_over())
+			break;
 		player_action(me, them);
 		if (me.is_staying())
 			me.end_turn();
@@ -153,7 +158,7 @@ void game::draw_player_hud(player &me, player &them) {
 	cout << me.get_name() << "'s hand:" << endl << endl;
 	me.display_hand('m');
 	cout << endl;
-	cout << "Total: " << me.display_total('m') << endl << endl;
+	cout << "Total: " << me.get_total() << endl << endl;
 	cout << "Current Bet:   $" << me.get_bet() << endl;
 	cout << "Current Funds: $" << me.get_money() << endl;
 }
@@ -183,6 +188,7 @@ void game::draw_actions(player &me, player &them) {
 		if (me.get_total() > 21) {
 			cout << "Total is " << me.get_total() << ". Busted!" << endl;
 			me.end_turn();
+			system("PAUSE");
 			return;
 		}
 		cout << "[Q] Quit   ";
@@ -285,6 +291,7 @@ bool game::is_round_over() {
 		p2.round_is_a_draw();
 		return true;
 	}
+	// This little else-if is because I couldn't figure out how to do a logical XOR in C++ using std lib
 	else if (p1.get_total() == 21 && p2.get_total() == 21) {
 		reveal_cards();
 		cout << "It's a draw! Both players get their money back!" << endl;
@@ -292,9 +299,27 @@ bool game::is_round_over() {
 		p1.round_is_a_draw();
 		p2.round_is_a_draw();
 		return true;
-	}	// NOTE TO SELF RIGHT NOW: Just run it with breakpoints all along the game loop and figure out where it's breaking.
+	}
 	if (p1.is_staying() && p2.is_staying()) {
-		if (p1.get_total() > p2.get_total()) {
+		if (p1.get_total() == 21 || p2.get_total() == 21) {
+			if (p2.get_total() != 21) {
+				reveal_cards();
+				cout << p1.get_name() << " wins!" << endl;
+				system("PAUSE");
+				p1.win_bet(p2.get_bet());
+				p2.reset_bet();
+				return true;
+			}
+			else if (p1.get_total() != 21) {
+				reveal_cards();
+				cout << p2.get_name() << " wins!" << endl;
+				system("PAUSE");
+				p2.win_bet(p1.get_bet());
+				p1.reset_bet();
+				return true;
+			}
+		}
+		else if (p1.get_total() > p2.get_total()) {
 			reveal_cards();
 			cout << p1.get_name() << " wins!" << endl;
 			system("PAUSE");
@@ -340,6 +365,7 @@ bool game::is_round_over() {
 }
 
 void game::new_round() {
+	m_round_over = false;
 	deck temp_deck;
 	temp_deck.shuffle_deck();
 	m_deck = temp_deck;

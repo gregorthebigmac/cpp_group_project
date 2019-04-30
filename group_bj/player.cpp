@@ -24,8 +24,7 @@ int player::display_total(char me_or_them) {
 		else {
 			total = total + m_hand[i].get_value(); }
 	}
-	m_total = total;
-	return m_total;
+	return total;
 }
 
 bool player::can_hit() {
@@ -231,8 +230,6 @@ void player::raise_bet() {
 	}
 }
 
-// TODO: FIX FLIP_ACE()
-// If more than one ace in hand, nothing changes when player selects [F]
 void player::flip_ace() {
 	using std::cout;
 	using std::endl;
@@ -240,6 +237,7 @@ void player::flip_ace() {
 	aces = get_player_aces();
 	if (aces.size() > 1) {
 		cout << "which Ace do you want to flip?" << endl;
+		// this for loop is just for getting a list of all the aces in the player's hand if the player has multiple aces.
 		for (int x = 0; x < aces.size(); x++) {
 			for (int y = 0; y < m_hand.size(); y++) {
 				if (m_hand[y].is_ace()) {
@@ -248,23 +246,29 @@ void player::flip_ace() {
 				}
 			}
 		}
+		// this for loop is just for finding the ace the player wants to flip and flips it.
 		std::string response;
 		getline(std::cin, response);
 		char choice = response[0];
-		putchar(toupper(choice));	// I think a difference in letter case is what was causing it to break. Need to test this.
+		putchar(toupper(choice));
 		for (int i = 0; i < m_hand.size(); i++) {
 			if (m_hand[i].is_ace()) {
 				if (choice == m_hand[i].get_suit()) {
 					m_hand[i].flip_ace();
+					calc_total();
 					return;
 				}
 			}
 		}
 	}
+	// this else block occurs if the player has only one ace, in which case we flip the only ace.
 	else {
 		for (int i = 0; i < m_hand.size(); i++) {
-			if (m_hand[i].is_ace())
+			if (m_hand[i].is_ace()) {
 				m_hand[i].flip_ace();
+				calc_total();
+				return;
+			}
 		}
 	}
 }
