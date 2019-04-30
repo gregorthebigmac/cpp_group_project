@@ -234,9 +234,9 @@ void game::player_action(player &me, player &them) {
 		getline(cin, response);
 		action = response[0];
 		if (action == 'y' || action == 'Y') {
-			me.end_turn();
 			m_round_over = true;
 			m_game_over = true;
+			me.end_turn();
 			return;
 		}
 	}
@@ -281,61 +281,21 @@ void game::player_action(player &me, player &them) {
 }
 
 bool game::is_round_over() {
-	using std::cout;
-	using std::endl;
-	if (p1.get_total() > 21 && p2.get_total() > 21) {
-		reveal_cards();
-		cout << "Both players bust! Both players get their money back!" << endl;
-		system("PAUSE");
-		p1.round_is_a_draw();
-		p2.round_is_a_draw();
-		return true;
-	}
-	// This little else-if is because I couldn't figure out how to do a logical XOR in C++ using std lib
-	else if (p1.get_total() == 21 && p2.get_total() == 21) {
-		reveal_cards();
-		cout << "It's a draw! Both players get their money back!" << endl;
-		system("PAUSE");
-		p1.round_is_a_draw();
-		p2.round_is_a_draw();
-		return true;
-	}
-	if (p1.is_staying() && p2.is_staying()) {
-		if (p1.get_total() == 21 || p2.get_total() == 21) {
-			if (p2.get_total() != 21) {
-				reveal_cards();
-				cout << p1.get_name() << " wins!" << endl;
-				system("PAUSE");
-				p1.win_bet(p2.get_bet());
-				p2.reset_bet();
-				return true;
-			}
-			else if (p1.get_total() != 21) {
-				reveal_cards();
-				cout << p2.get_name() << " wins!" << endl;
-				system("PAUSE");
-				p2.win_bet(p1.get_bet());
-				p1.reset_bet();
-				return true;
-			}
-		}
-		else if (p1.get_total() > p2.get_total()) {
+	if (m_round_over) {
+		return true; }
+	else {
+		using std::cout;
+		using std::endl;
+		if (p1.get_total() > 21 && p2.get_total() > 21) {
 			reveal_cards();
-			cout << p1.get_name() << " wins!" << endl;
+			cout << "Both players bust! Both players get their money back!" << endl;
 			system("PAUSE");
-			p1.win_bet(p2.get_bet());
-			p2.reset_bet();
+			p1.round_is_a_draw();
+			p2.round_is_a_draw();
 			return true;
 		}
-		else if (p1.get_total() < p2.get_total()) {
-			reveal_cards();
-			cout << p2.get_name() << " wins!" << endl;
-			system("PAUSE");
-			p2.win_bet(p1.get_bet());
-			p1.reset_bet();
-			return true;
-		}
-		else {
+		// This little else-if is because I couldn't figure out how to do a logical XOR in C++ using std lib
+		else if (p1.get_total() == 21 && p2.get_total() == 21) {
 			reveal_cards();
 			cout << "It's a draw! Both players get their money back!" << endl;
 			system("PAUSE");
@@ -343,25 +303,69 @@ bool game::is_round_over() {
 			p2.round_is_a_draw();
 			return true;
 		}
-	}
-	else if (p1.is_turn_over() && p2.is_turn_over()) {
-		if (p1.get_total() > 21) {
-			reveal_cards();
-			cout << p1.get_name() << " busts! " << p2.get_name() << " wins!" << endl;
-			p2.win_bet(p1.get_bet());
-			p1.reset_bet();
-			return true;
+		if (p1.is_staying() && p2.is_staying()) {
+			if (p1.get_total() == 21 || p2.get_total() == 21) {
+				if (p2.get_total() != 21) {
+					reveal_cards();
+					cout << p1.get_name() << " wins!" << endl;
+					system("PAUSE");
+					p1.win_bet(p2.get_bet());
+					p2.reset_bet();
+					return true;
+				}
+				else if (p1.get_total() != 21) {
+					reveal_cards();
+					cout << p2.get_name() << " wins!" << endl;
+					system("PAUSE");
+					p2.win_bet(p1.get_bet());
+					p1.reset_bet();
+					return true;
+				}
+			}
+			else if (p1.get_total() > p2.get_total()) {
+				reveal_cards();
+				cout << p1.get_name() << " wins!" << endl;
+				system("PAUSE");
+				p1.win_bet(p2.get_bet());
+				p2.reset_bet();
+				return true;
+			}
+			else if (p1.get_total() < p2.get_total()) {
+				reveal_cards();
+				cout << p2.get_name() << " wins!" << endl;
+				system("PAUSE");
+				p2.win_bet(p1.get_bet());
+				p1.reset_bet();
+				return true;
+			}
+			else {
+				reveal_cards();
+				cout << "It's a draw! Both players get their money back!" << endl;
+				system("PAUSE");
+				p1.round_is_a_draw();
+				p2.round_is_a_draw();
+				return true;
+			}
 		}
-		else if (p2.get_total() > 21) {
-			reveal_cards();
-			cout << p2.get_name() << " busts! " << p1.get_name() << " wins!" << endl;
-			p1.win_bet(p2.get_bet());
-			p2.reset_bet();
-			return true;
+		else if (p1.is_turn_over() && p2.is_turn_over()) {
+			if (p1.get_total() > 21) {
+				reveal_cards();
+				cout << p1.get_name() << " busts! " << p2.get_name() << " wins!" << endl;
+				p2.win_bet(p1.get_bet());
+				p1.reset_bet();
+				return true;
+			}
+			else if (p2.get_total() > 21) {
+				reveal_cards();
+				cout << p2.get_name() << " busts! " << p1.get_name() << " wins!" << endl;
+				p1.win_bet(p2.get_bet());
+				p2.reset_bet();
+				return true;
+			}
+			else return false;
 		}
 		else return false;
 	}
-	else return false;
 }
 
 void game::new_round() {
@@ -374,30 +378,34 @@ void game::new_round() {
 }
 
 bool game::is_game_over() {
-	bool game_over = false;
-	using std::cout;
-	using std::endl;
-	if (p1.get_money() < 1) {
-		if (p1.get_bet() < 1) {
-			cout << p2.get_name() << " wins!" << endl;
+	if (m_game_over) {
+		return true; }
+	else {
+		bool game_over = false;
+		using std::cout;
+		using std::endl;
+		if (p1.get_money() < 1) {
+			if (p1.get_bet() < 1) {
+				cout << p2.get_name() << " wins!" << endl;
+				system("PAUSE");
+				game_over = true;
+			}
+		}
+		else if (p2.get_money() < 1) {
+			if (p2.get_bet() < 1) {
+				cout << p1.get_name() << " wins!" << endl;
+				system("PAUSE");
+				game_over = true;
+			}
+		}
+		else if (p1.get_money() < 1 && p2.get_money() < 1) {
+			cout << "I don't know how you *both* managed to have no money, but somehow you broke me." << endl;
+			cout << "Congratulations to the both of you!" << endl;
 			system("PAUSE");
 			game_over = true;
 		}
+		return game_over;
 	}
-	else if (p2.get_money() < 1) {
-		if (p2.get_bet() < 1) {
-			cout << p1.get_name() << " wins!" << endl;
-			system("PAUSE");
-			game_over = true;
-		}
-	}
-	else if (p1.get_money() < 1 && p2.get_money() < 1) {
-		cout << "I don't know how you *both* managed to have no money, but somehow you broke me." << endl;
-		cout << "Congratulations to the both of you!" << endl;
-		system("PAUSE");
-		game_over = true;
-	}
-	return game_over;
 }
 
 bool game::confirm(std::string question) {
