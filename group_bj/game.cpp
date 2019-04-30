@@ -97,8 +97,12 @@ void game::game_loop(player &first, player &second) {
 			if (m_game_over || m_round_over) {
 				break;
 			}
-			first.set_hit_this_turn(false);
-			second.set_hit_this_turn(false);
+			if (first.is_turn_over() && second.is_turn_over()) {
+				first.begin_turn();
+				second.begin_turn();
+				first.set_hit_this_turn(false);
+				second.set_hit_this_turn(false);
+			}
 		}
 		m_game_over = is_game_over();
 		if (m_game_over) {
@@ -140,7 +144,7 @@ void game::draw_player_hud(player &me, player &them) {
 	cout << them.get_name() << "'s hand:" << endl << endl;
 	them.display_hand('t');
 	cout << endl;
-	cout << them.get_name() << " is showing " << them.get_total() << endl << endl;
+	cout << them.get_name() << " is showing " << them.display_total('t') << endl << endl;
 	cout << them.get_name() << " current bet:   $" << them.get_bet() << endl;
 	cout << them.get_name() << " current funds: $" << them.get_money() << endl << endl;
 
@@ -149,7 +153,7 @@ void game::draw_player_hud(player &me, player &them) {
 	cout << me.get_name() << "'s hand:" << endl << endl;
 	me.display_hand('m');
 	cout << endl;
-	cout << "Total: " << me.get_total() << endl << endl;
+	cout << "Total: " << me.display_total('m') << endl << endl;
 	cout << "Current Bet:   $" << me.get_bet() << endl;
 	cout << "Current Funds: $" << me.get_money() << endl;
 }
@@ -169,7 +173,8 @@ void game::draw_actions(player &me, player &them) {
 			if (confirm(match_bet)) {
 				int diff = them.get_bet() - me.get_bet();
 				me.match_bet(diff);
-				return;		// see if this cures the "double ENTER" problem
+				draw_player_hud(me, them);
+				draw_actions(me, them);
 			}
 			else m_round_over = is_round_over();
 		}
@@ -232,6 +237,7 @@ void game::player_action(player &me, player &them) {
 	else if (action == 'h' || action == 'H') {
 		if (me.has_hit_this_turn()) {
 			cout << "You already hit this turn! Either Stay or End turn!" << endl;
+			system("PAUSE");
 			return;
 		}
 		else {

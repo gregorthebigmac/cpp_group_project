@@ -16,11 +16,13 @@ player::player() {	// ctor
 
 /////////////// GETTERS ///////////////
 
-int player::get_total() {
+int player::display_total(char me_or_them) {
 	int total = 0;
 	for (int i = 0; i < m_hand.size(); i++) {
-		if (m_hand[i].is_hidden() == false)
-			total = total + m_hand[i].get_value();
+		if (me_or_them == 't' && i == 0) {
+			continue; }
+		else {
+			total = total + m_hand[i].get_value(); }
 	}
 	m_total = total;
 	return m_total;
@@ -123,6 +125,14 @@ void player::place_bet() {
 	m_wallet = m_wallet - bet;
 }
 
+void player::calc_total() {
+	int total = 0;
+	for (int i = 0; i < m_hand.size(); i++) {
+		total = total + m_hand[i].get_value();
+	}
+	m_total = total;
+}
+
 void player::display_hand(char me_or_them) {
 	using std::cout;
 	using std::endl;
@@ -130,14 +140,8 @@ void player::display_hand(char me_or_them) {
 		int card_num = i + 1;
 		cout << "Card " << card_num << ": ";
 		if (i == 0 && me_or_them == 't') {
-			if (m_hand[i].is_hidden() == false)
-				m_hand[i].flip_hidden();
 			cout << "[Hidden]" << endl;
 			continue;
-		}
-		if (i == 0 && me_or_them == 'm') {
-			if (m_hand[i].is_hidden() == true) {
-				m_hand[i].flip_hidden(); }
 		}
 		if (m_hand[i].is_ace()) {
 			cout << "A||" << m_hand[i].get_suit();
@@ -263,6 +267,11 @@ void player::flip_ace() {
 				m_hand[i].flip_ace();
 		}
 	}
+}
+
+void player::draw_card(card _card) {
+	m_hand.push_back(_card);
+	calc_total();
 }
 
 bool player::confirm(std::string question) {

@@ -11,7 +11,8 @@ public:
 	~player(){}	// dtor
 
 	// getters
-	int get_total();
+	int display_total(char me_or_them);
+	int get_total() { return m_total; }
 	std::vector<char> get_player_aces();
 	std::string get_name() { return m_name; }
 	std::deque<card> get_hand() { return m_hand; }
@@ -40,8 +41,9 @@ public:
 	// doers
 	void place_bet();
 	void display_hand(char me_or_them);
+	void calc_total();
 	void flip_ace();
-	void draw_card(card _card) { m_hand.push_back(_card); }
+	void draw_card(card _card);
 	void increase_bet(int amount) { m_bet = m_bet + amount; }
 	void win_bet(int their_bet) { m_wallet = m_wallet + m_bet + their_bet; }
 	void round_is_a_draw() { m_wallet = m_wallet + m_bet; }
