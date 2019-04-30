@@ -44,6 +44,8 @@ void game::init_round() {
 		game_loop(p2, p1); }
 	else {
 		std::cout << "Both player's bets are the same! Now choosing one at random...";
+		system("PAUSE");
+
 		srand(time(NULL));
 		int who_goes_first = rand() % 2;
 		if (who_goes_first == 0) {
@@ -52,6 +54,7 @@ void game::init_round() {
 		}
 		else {
 			std::cout << p2.get_name() << " was chosen! You go first!" << std::endl;
+			system("PAUSE");
 			game_loop(p2, p1);
 		}
 	}
@@ -168,11 +171,11 @@ void game::draw_player_hud(player &me, player &them) {
 void game::draw_actions(player &me, player &them) {
 	using std::cout;
 	using std::endl;
-	me.begin_turn();
-	me.set_can_flip_ace(false);
-	me.set_can_hit(false);
+	//me.begin_turn();
+	//me.set_can_flip_ace(false);
+	//me.set_can_hit(false);
 	cout << "Press the key in [ ] + [ENTER] to perform the indicated action." << endl << endl;
-	if (me.get_bet() < them.get_bet()) {
+	if (me.get_bet() < them.get_bet()) {	// this condition is problematic.
 		if (me.get_money() > 0) {
 			cout << "You must match " << them.get_name() << "'s bet before proceeding." << endl;
 			std::string name = them.get_name();
@@ -186,7 +189,7 @@ void game::draw_actions(player &me, player &them) {
 			else m_round_over = is_round_over();
 		}
 	}
-	else {
+	else { // it's skipping this because the player is close to going broke, and it's an else statement, so it just skips it.
 		if (me.get_total() > 21) {
 			cout << "Total is " << me.get_total() << ". Busted!" << endl;
 			me.end_turn();

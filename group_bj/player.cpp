@@ -278,6 +278,11 @@ void player::draw_card(card _card) {
 	calc_total();
 }
 
+void player::increase_bet(int amount) {
+	m_bet = m_bet + amount;
+	m_wallet = m_wallet - amount;
+}
+
 bool player::confirm(std::string question) {
 	std::cout << question << std::endl;
 	std::string response;
